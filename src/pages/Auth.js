@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import autimg from "../assests/imgges.jpg"
-import { auth, provider } from "../Firebase/config"
+import { auth, provider } from "../firebase/config"
 import { signInWithPopup } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,13 +9,19 @@ export const Auth = () => {
   const navigate = useNavigate();
   const [isAuth, setIsauth] = useState(JSON.parse(localStorage.getItem("isAuth")) || false);
 
-  function handelLogin() {
-    signInWithPopup(auth, provider).then((result) => {
-      // console.log(result);
-      setIsauth(true);
-      localStorage.setItem("isAuth", true);
-      navigate("/chatroom")
-    })
+  async function handelLogin() {
+    try {
+      await signInWithPopup(auth, provider).then((result) => {
+        // console.log(result);
+        setIsauth(true);
+        localStorage.setItem("isAuth", true);
+        navigate("/chatroom")
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
 
