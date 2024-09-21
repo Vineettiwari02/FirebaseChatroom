@@ -3,6 +3,8 @@ import autimg from "../assests/imgges.jpg"
 import { auth, provider } from "../firebase/config"
 import { signInWithPopup } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
+
+
 export const Auth = () => {
   const navigate = useNavigate();
   const [isAuth, setIsauth] = useState(JSON.parse(localStorage.getItem("isAuth")) || false);
