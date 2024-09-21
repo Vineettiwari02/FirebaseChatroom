@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import autimg from "../assests/imgges.jpg"
 import { auth, provider } from "../firebase/config"
+
 import { signInWithPopup } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
