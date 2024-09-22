@@ -1,8 +1,10 @@
+// Chatbox.js
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase/config';
 import { useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
+import { signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { onSnapshot, collection, addDoc } from 'firebase/firestore';
+import { Message } from './Message';
 
 export const Chatbox = () => {
   const [messages, setMessages] = useState([]);
@@ -13,12 +15,11 @@ export const Chatbox = () => {
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'messages'), snapshot => {
       const messagesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      // Sort messages by createdAt timestamp in ascending order
       messagesData.sort((a, b) => a.createdAt - b.createdAt);
       setMessages(messagesData);
     });
 
-    return () => unsubscribe(); // Clean up subscription on unmount
+    return () => unsubscribe();
   }, []);
 
   const handleSendMessage = async (e) => {
@@ -27,15 +28,25 @@ export const Chatbox = () => {
       await addDoc(collection(db, 'messages'), {
         text: newMessage,
         userId: auth.currentUser.uid,
-        createdAt: new Date() // Ensure this is a Date object
+        userImage: auth.currentUser.photoURL || "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        createdAt: new Date()
       });
-      setNewMessage(''); // Clear the input after sending
+      setNewMessage('');
     }
   };
-
   const handleLogout = async () => {
     await signOut(auth);
     navigate("/");
+  };
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+    }
   };
 
   return (
@@ -44,10 +55,11 @@ export const Chatbox = () => {
         <h1>Chatroom</h1>
         <div className="profilebag">
           <div className="profileimg" onClick={() => setShow(!show)}>
-            <img
-              src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-              alt="profileimg"
-            />
+            {auth.currentUser?.photoURL ? (
+              <img src={auth.currentUser.photoURL} alt="profile" />
+            ) : (
+              <button onClick={handleGoogleSignIn}>Sign in with Google</button>
+            )}
           </div>
           {show && (
             <div className="dropdown" onClick={handleLogout}>
@@ -59,9 +71,11 @@ export const Chatbox = () => {
 
       <section>
         {messages.map(msg => (
-          <div key={msg.id} className={`message ${msg.userId === auth.currentUser?.uid ? 'sent' : 'received'}`}>
-            <p>{msg.text}</p>
-          </div>
+          <Message
+            key={msg.id}
+            msg={msg}
+            currentUser={auth.currentUser}
+          />
         ))}
 
         <form onSubmit={handleSendMessage}>
