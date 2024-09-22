@@ -190,7 +190,9 @@ code {
 }
 .chatbox{
   min-height: 80vh;
-  overflow: hidden;
+  overflow: auto;
+  max-height: 80vh;
+  background-color: white;
 }
 
 .chatbox main {
@@ -224,7 +226,7 @@ form {
   max-width: 728px;
   display: flex;
   font-size: 1.5rem;
-  bottom: 30px;
+  bottom: 10vh;
 }
 
 form button {
@@ -305,7 +307,7 @@ ul, li {
 
 .sent p {
   color: white;
-  background: #0b93f6;
+  background: hwb(352.37deg 30.59% 1.57%);
   align-self: flex-end;
 }
 .received p {
@@ -483,6 +485,12 @@ img {
 .error{
   width: 50%;
 }
+.chatroomBlock section{
+  padding: 10px;
+}
+.chatroomBlock section{
+  margin-left: -10px;
+}
 @media only screen and (max-width: 500px) {
   body {
     /* margin: 0 15px; */
@@ -563,6 +571,7 @@ img {
   border:1px solid rgb(218, 218, 218);
   border-radius: 4px;
   cursor: pointer;
+  white-space: nowrap;
 }
 .profilebag .dropdown:hover{
   background-color: hwb(352.37deg 30.59% 1.57%);
@@ -571,3 +580,29 @@ img {
 .profileimg{
   cursor: pointer;
 }
+
+
+
+/* new css */
+.message {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  max-width: 100%; /* Limit the width of messages */
+}
+
+
+
+.received {
+  justify-content: flex-start; /* Aligns received messages to the left */
+}
+
+.message img {
+  border-radius: 50%;
+  width: 30px; /* Adjust the size as needed */
+  height: 30px; /* Adjust the size as needed */
+  margin-right: 10px;
+}
+
+
+
